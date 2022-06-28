@@ -1,10 +1,13 @@
-package co.edu.poli;
+package co.edu.poli.socketdb;
 
-import co.edu.poli.handler.ClientHandler;
+import co.edu.poli.socketdb.handler.ClientHandler;
+import co.edu.poli.socketdb.util.DbUtil;
 
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.sql.Connection;
+import java.sql.SQLException;
 
 /**
  * This class creates a Server with a serverSocket object and starts it.
@@ -32,18 +35,20 @@ public class Server {
      * @param args
      * @throws IOException to handle input or output errors
      */
-    public static void main(String[] args) throws IOException {
-        System.out.println("Esperando un cliente...");
-        ServerSocket serverSocket = new ServerSocket(9999);
-        Server server = new Server(serverSocket);
-        server.startServer();
+    public static void main(String[] args) throws IOException, SQLException {
+        try (Connection connection = DbUtil.getInstance().initDatabaseConnection()) {
+            System.out.println("Esperando un cliente...");
+            ServerSocket serverSocket = new ServerSocket(9999);
+            Server server = new Server(serverSocket);
+            server.startSocketServer();
+        }
     }
 
     /**
      * Starts the server, it creates one {@link ClientHandler} per User in a separate {@link Thread}
      * does not return something (void)
      */
-    public void startServer() {
+    public void startSocketServer() {
         try {
             while (!serverSocket.isClosed()) {
                 Socket socket = serverSocket.accept();
@@ -52,7 +57,7 @@ public class Server {
                 thread.start();
             }
         } catch (IOException exception) {
-            System.out.println("El cliente cerró la conexión del socket");
+            System.out.println("Error de conexión: " + exception.getMessage());
         }
     }
 

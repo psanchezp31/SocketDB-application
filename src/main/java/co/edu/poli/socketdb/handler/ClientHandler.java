@@ -1,6 +1,7 @@
-package co.edu.poli.handler;
+package co.edu.poli.socketdb.handler;
 
-import co.edu.poli.Client;
+import co.edu.poli.socketdb.Client;
+import co.edu.poli.socketdb.util.JsonUtil;
 
 import java.io.*;
 import java.net.Socket;
@@ -34,8 +35,8 @@ public class ClientHandler implements Runnable {
             this.bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             this.clientUsername = bufferedReader.readLine();
             clientHandlers.add(this);
-            System.out.println(clientUsername + " ha entrado al chat");
-            broadcastMessage("SERVER: " + clientUsername + " ha entrado al chat!");
+            System.out.println(clientUsername + " se ha conectado al servidor");
+            //broadcastMessage("SERVER: " + clientUsername + " ha entrado al chat!");
         } catch (IOException e) {
             closeEverything(socket, bufferedReader, bufferedWriter);
         }
@@ -48,16 +49,17 @@ public class ClientHandler implements Runnable {
      */
     @Override
     public void run() {
-        String messageFromClient;
+        String clientCommand;
 
         while (socket.isConnected()) {
             try {
-                messageFromClient = bufferedReader.readLine();
-                if (messageFromClient.equalsIgnoreCase(clientUsername + ": chao")) {
+                clientCommand = bufferedReader.readLine();
+                if (clientCommand.equalsIgnoreCase(clientUsername + ": chao")) {
                     closeEverything(socket, bufferedReader, bufferedWriter);
                     break;
                 }
-                broadcastMessage(messageFromClient);
+                String feedback = CommandHandler.getInstance().processCommand(clientCommand);
+                broadcastMessage(feedback);
             } catch (IOException e) {
                 closeEverything(socket, bufferedReader, bufferedWriter);
                 break;
@@ -75,7 +77,7 @@ public class ClientHandler implements Runnable {
     private void broadcastMessage(String messageToSend) {
         for (ClientHandler clientHandler : clientHandlers) {
             try {
-                if (!clientHandler.clientUsername.equals(clientUsername)) {
+                if (clientHandler.clientUsername.equals(clientUsername)) {
                     clientHandler.bufferedWriter.write(messageToSend);
                     clientHandler.bufferedWriter.newLine();
                     clientHandler.bufferedWriter.flush();

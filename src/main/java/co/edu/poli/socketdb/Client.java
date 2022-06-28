@@ -1,4 +1,4 @@
-package co.edu.poli;
+package co.edu.poli.socketdb;
 
 
 import java.io.*;
@@ -72,11 +72,14 @@ public class Client {
     public static void main(String[] args) throws IOException {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Escriba su nombre: ");
-        String username = scanner.nextLine();
+        //String username = scanner.nextLine();
+        String username = "client1";
         System.out.println("IP del Servidor: ");
-        String IPServer = scanner.nextLine();
+        //String IPServer = scanner.nextLine();
+        String IPServer = "localhost";
         System.out.println("Puerto de la conexión: ");
-        int port = scanner.nextInt();
+        //int port = scanner.nextInt();
+        int port = 9999;
         Socket socket = new Socket(IPServer, port);
         Client client = new Client(socket, username);
         client.listenForMessage();
@@ -84,7 +87,7 @@ public class Client {
     }
 
     /**
-     * Send messages to {@link ClientHandler} while socket is connected
+     * Send messages to {@link co.edu.poli.socketdb.handler.ClientHandler} while socket is connected
      * if something went wrong closeEverything method is called to close socket and buffers
      * does not return something (void)
      */
@@ -97,7 +100,7 @@ public class Client {
             Scanner scanner = new Scanner(System.in);
             while (socket.isConnected()) {
                 String messageToSend = scanner.nextLine();
-                bufferedWriter.write(username + ": " + messageToSend);
+                bufferedWriter.write(messageToSend); // write command
                 bufferedWriter.newLine();
                 bufferedWriter.flush();
             }
@@ -107,7 +110,7 @@ public class Client {
     }
 
     /**
-     * Listen for messages from the {@link ClientHandler} in separated threads
+     * Listen for messages from the {@link co.edu.poli.socketdb.handler.ClientHandler} in separated threads
      * implements method run from {@link Runnable} interfaces which is the argument for {@link Thread} Class
      * if something went wrong  closeEverything method is called to close socket and buffers
      * does not return something (void)
@@ -116,15 +119,15 @@ public class Client {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                String messageFromGroupChat;
+                String messageFromServer;
                 while (socket.isConnected()) {
                     try {
-                        messageFromGroupChat = bufferedReader.readLine();
-                        if (messageFromGroupChat == null || messageFromGroupChat.equalsIgnoreCase(username + ": chao")) {
+                        messageFromServer = bufferedReader.readLine();
+                        if (messageFromServer == null || messageFromServer.equalsIgnoreCase(username + ": chao")) {
                             closeEverything(socket, bufferedReader, bufferedWriter);
                             exit(1);
                         }
-                        System.out.println(messageFromGroupChat);
+                        System.out.println(messageFromServer);
 
                     } catch (IOException e) {
                         closeEverything(socket, bufferedReader, bufferedWriter);

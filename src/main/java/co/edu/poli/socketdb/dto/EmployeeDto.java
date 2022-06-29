@@ -5,6 +5,16 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Date;
 
+/**
+ * This class has all the attributes of the Employee table. Also has the getters and setters needed to obtain and
+ * update properties.
+ *
+ * @autor Paula Sanchez
+ * @autor Diana Neira
+ * @autor Ramon Barrios
+ * @autor Andres Triana
+ */
+
 public class EmployeeDto {
 
     @JsonProperty("empl_id")

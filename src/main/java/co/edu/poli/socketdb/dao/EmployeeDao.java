@@ -8,6 +8,18 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+/**
+ * This class is in charge of handle the connection with the database and interact with it trough methods as delete,
+ * update, create, read
+ * Uses Singleton pattern because uses just one instance of the EmployeeDao, to use this instance in other parts
+ * of the code.
+ *
+ * @autor Paula Sanchez
+ * @autor Diana Neira
+ * @autor Ramon Barrios
+ * @autor Andres Triana
+ */
+
 public class EmployeeDao {
 
     private static final EmployeeDao instance = new EmployeeDao();
@@ -17,15 +29,20 @@ public class EmployeeDao {
         this.connection = DbUtil.getInstance().getConnection();
     }
 
+    /**
+     * Implementation of Singleton pattern, it returns an instance of this class itself.
+     *
+     * @return EmployeeDao
+     */
     public static EmployeeDao getInstance() {
         return instance;
     }
 
     /**
-     * Never Used. passiveDelete is encouraged.
+     * Through the connection to the database, execute a delete sentence, uses an explicit commit.
      *
      * @param id
-     * @return
+     * @return boolean
      */
     public boolean delete(Integer id) {
         String sql = "DELETE FROM datos.empleado WHERE empl_id = ?";
@@ -39,6 +56,12 @@ public class EmployeeDao {
         }
     }
 
+    /**
+     * Through the connection to the database, execute an update sentence, uses an explicit commit.
+     *
+     * @param id
+     * @return boolean
+     */
     public boolean passiveDelete(Integer id) {
         String sql = "UPDATE datos.empleado SET " +
                 "empl_activo = ? " +
@@ -55,6 +78,12 @@ public class EmployeeDao {
         }
     }
 
+    /**
+     * Through the connection to the database, execute an update sentence, uses an explicit commit.
+     *
+     * @param dto
+     * @return boolean
+     */
     public boolean update(EmployeeDto dto) {
         String sql = "UPDATE datos.empleado SET " +
                 "empl_primer_nombre=?, " +
@@ -90,6 +119,11 @@ public class EmployeeDao {
         }
     }
 
+    /**
+     * Through the connection to the database, execute a create sentence, uses an explicit commit.
+     *
+     * @param dto
+     */
     public void create(EmployeeDto dto) {
         String sql = "INSERT INTO datos.empleado " +
                 "(empl_id," +
@@ -125,6 +159,12 @@ public class EmployeeDao {
         }
     }
 
+    /**
+     * Through the connection to the database, execute a select sentence, uses an explicit commit.
+     *
+     * @param id
+     * @return EmployeeDto
+     */
     public EmployeeDto read(Integer id) {
         EmployeeDto dto = null;
         String sql = "SELECT * FROM datos.empleado where empl_id = ?";

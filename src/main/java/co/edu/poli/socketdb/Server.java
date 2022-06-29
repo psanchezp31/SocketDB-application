@@ -14,6 +14,7 @@ import java.sql.SQLException;
  * @autor Paula Sanchez
  * @autor Diana Neira
  * @autor Ramon Barrios
+ * @autor Andres Triana
  */
 public class Server {
 
@@ -30,6 +31,7 @@ public class Server {
     /**
      * Creates serverSocket object with the port where server will be listening
      * Creates a server object with the serverSocket created
+     * Initialized the database connection
      * Start the server
      *
      * @param args

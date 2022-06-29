@@ -13,6 +13,7 @@ import static java.lang.System.exit;
  * @autor Paula Sanchez
  * @autor Diana Neira
  * @autor Ramon Barrios
+ * @autor Andres Triana
  */
 public class Client {
     private Socket socket;
@@ -72,14 +73,11 @@ public class Client {
     public static void main(String[] args) throws IOException {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Escriba su nombre: ");
-        //String username = scanner.nextLine();
-        String username = "client1";
+        String username = scanner.nextLine();
         System.out.println("IP del Servidor: ");
-        //String IPServer = scanner.nextLine();
-        String IPServer = "localhost";
+        String IPServer = scanner.nextLine();
         System.out.println("Puerto de la conexión: ");
-        //int port = scanner.nextInt();
-        int port = 9999;
+        int port = scanner.nextInt();
         Socket socket = new Socket(IPServer, port);
         Client client = new Client(socket, username);
         client.listenForMessage();

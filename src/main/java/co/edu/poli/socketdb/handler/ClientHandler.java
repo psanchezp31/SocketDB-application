@@ -1,7 +1,6 @@
 package co.edu.poli.socketdb.handler;
 
 import co.edu.poli.socketdb.Client;
-import co.edu.poli.socketdb.util.JsonUtil;
 
 import java.io.*;
 import java.net.Socket;
@@ -13,6 +12,7 @@ import java.util.ArrayList;
  * @autor Paula Sanchez
  * @autor Diana Neira
  * @autor Ramon Barrios
+ * @autor Andres Triana
  */
 public class ClientHandler implements Runnable {
 
@@ -36,7 +36,6 @@ public class ClientHandler implements Runnable {
             this.clientUsername = bufferedReader.readLine();
             clientHandlers.add(this);
             System.out.println(clientUsername + " se ha conectado al servidor");
-            //broadcastMessage("SERVER: " + clientUsername + " ha entrado al chat!");
         } catch (IOException e) {
             closeEverything(socket, bufferedReader, bufferedWriter);
         }
@@ -54,10 +53,6 @@ public class ClientHandler implements Runnable {
         while (socket.isConnected()) {
             try {
                 clientCommand = bufferedReader.readLine();
-                if (clientCommand.equalsIgnoreCase(clientUsername + ": chao")) {
-                    closeEverything(socket, bufferedReader, bufferedWriter);
-                    break;
-                }
                 String feedback = CommandHandler.getInstance().processCommand(clientCommand);
                 broadcastMessage(feedback);
             } catch (IOException e) {
